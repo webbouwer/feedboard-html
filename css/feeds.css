@@ -1,0 +1,193 @@
+*
+{
+margin:0;
+padding:0;
+}
+body,
+html
+{
+width:100%;
+height:100%;
+font-size:110%;
+font-family:"arial", verdana, geneva;
+}
+
+h1,h2,h3
+{
+}
+
+ul li
+{
+position:relative;
+}
+ul li:hover
+{
+}
+
+a
+{
+color:#232323;
+text-decoration:none;
+}
+a:hover
+{
+color:#343434;
+text-decoration:underline;
+}
+
+.clr
+{
+clear:both;
+}
+
+
+
+/********************************************** GLOBAL ****************************************/
+div#maincontainer
+{
+width:98%;
+margin:0px auto;
+}
+
+div#feedboard
+{
+}
+div#topbar .option
+{
+display:block;
+list-style-type:none;
+}
+div#navbar
+{
+}
+div#loaderbox,
+div#contentbar
+{
+}
+
+div#loaderbox
+{
+width:100%;
+text-align:center;
+}
+div#loaderbox.hidden {
+display:none;
+}
+div#loaderbox.active {
+display:block;
+}
+ul#feedbundle li.bundle-item,
+ul#feedbundle li.no-display
+{
+list-style-type:none;
+}
+ul#feedbundle li.no-display
+{
+clear:both;
+}
+div#sidebar
+{
+}
+div#bottombar
+{
+}
+
+
+
+/********************************************** GROUP MENU ****************************************/
+
+
+ul#groupmenu li,
+ul#groupchannelbox li
+{
+}
+li#currentgroup
+{
+text-decoration:underline;
+}
+
+#navbar ul li span,
+#activeselectbox ul li span
+{
+position:absolute;
+right:0px;
+top:0px;
+background-color:#555555;
+color:#dddddd;
+padding:0px 2px;
+}
+
+ul#groupchannelbox li span,
+ul#groupchannelbox li.nonactive span
+{
+display:none;
+}
+ul#groupchannelbox li.active span
+{
+display:inline;
+padding:2px 2px;
+}
+ul#groupchannelbox li.active:hover
+{
+background-color: #CCCCCC;
+}
+
+/********************************************** ACTIVE MENU ****************************************/
+div#activeselectbox div ul li
+{
+background-color: #CCCCCC;
+}
+div#activeselectbox div ul li:hover
+{
+background-color: #ffffff;
+}
+
+
+/********************************************** CONTENT ****************************************/
+ul#feedbundle 
+{
+}
+ul#feedbundle li.bundle-item
+{
+display:block;
+width:100%;
+}
+ul#feedbundle li.bundle-item div.itemtextbox img
+{
+display:none;
+width:0;
+height:0;
+}
+ul#feedbundle li.bundle-item div.itemtextbox img:nth-child(1)
+{
+display:block;
+width:40%;
+height:auto;
+float:left;
+margin-right:12px;
+vertical-align:text-top;
+}
+
+/********************************************** RESPONSIVE ****************************************/
+@media screen and (min-width: 760px) {
+
+ul#feedbundle 
+{
+}
+ul#feedbundle li.bundle-item
+{
+/* float:left;
+display:block;
+width:32%;
+margin-right:1%;*/
+}
+ul#feedbundle li.bundle-item div.itemtextbox img:nth-child(1)
+{
+/*
+display:block;
+width:100%;
+margin-right:0px;
+*/
+}
+
+}

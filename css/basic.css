@@ -1,0 +1,115 @@
+body,
+html
+{
+font-size:100%;
+}
+
+
+div#bottombar,
+ul#groupmenu,
+ul#groupchannelbox
+{
+clear:both;
+}
+ul#groupmenu li,
+ul#groupchannelbox li
+{
+float:left;
+list-style-type:none;
+padding:2px 3px;
+margin:2px 4px 2px 0px;
+background-color:#232323;
+font-size:1.1em;
+color:#ffffff;
+}
+ul#groupchannelbox li
+{
+background-color:#750000;
+color:#ffffff;
+}
+
+
+div#sidebar
+{
+position:relative;
+display:block;
+width:100%;
+font-size:1.2em;
+background-color:#efefef;
+}
+
+#activeselectbox
+{
+}
+#activeselectbox ul li
+{
+}
+
+
+
+
+
+li.bundle-item
+{ 
+margin:2px 0px 6px;
+}
+li.bundle-item h4
+{
+font-size:0.8em;
+}
+li.bundle-item h3
+{
+font-size:1.2em;
+}
+
+@media screen and (min-width: 760px) {
+
+body,
+html
+{
+font-size:98%;
+height:100%;
+}
+div#maincontainer
+{
+position:relative;
+min-height:100%;
+}
+div#feedboard
+{
+position:relative;
+min-height:100%;
+}
+
+div#topbar,
+div#optionbar,
+div#navbar,
+div#loaderbox,
+div#contentbar
+{
+float:left;
+width:71%;
+clear:both;
+}
+
+li.bundle-item h3
+{
+font-size:1.5em;
+}
+
+div#sidebar
+{
+position:fixed;
+display:block;
+right:0px;
+top:0px;
+width:29%;
+height:100%;
+}
+
+div#bottombar
+{
+}
+
+
+}
