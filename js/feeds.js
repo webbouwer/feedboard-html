@@ -1,5 +1,5 @@
 /* Feedboard 0.4 */
-/* 
+/*
 Wishlist
 - date/time format (.. time ago) .. https://coderwall.com/p/uub3pw/javascript-timeago-func-e-g-8-hours-ago
 - desktop and mobile styling
@@ -16,11 +16,11 @@ Todo Version 0.2
 Changelog
 
 Version 0.2
-- toggleChannel querySelectorAll data-feedurl 
+- toggleChannel querySelectorAll data-feedurl
 
 Version 0.1
 - import opml file to archive and groups
-- build group navigation 
+- build group navigation
 - import rss channel to archive
 - list channels and items in bundle
 - display and reload bundle
@@ -30,44 +30,90 @@ Version 0.1
 */
 
 // opml file with links
-var linklibrary = ['http://webdesigndenhaag.net/lab/wp-links-opml.php'];
+var linklibrary = ['http://webdesigndenhaag.net/project/feedboard/library.opml',
+				   //'https://raw.githubusercontent.com/marklogic-community/feed/master/test-scripts/data/opml_google-reader.opml',
+				   //'http://webdesigndenhaag.net/project/feedboard/construct.opml',
+				   //http://webdesigndenhaag.net/lab/wp-links-opml.php'
+				  ];
 // globals
 var archive = []; // feedchannel list to be extended on first selection
 var groups = []; // array with group names
 var channels = []; // array of urls selected for display
 var bundle = []; // array of items from selected urls
-var maxf = 3; // default amount of feeditems each url 
+var maxf = 3; // default amount of feeditems each url
+
+
+
+var feedBoard = function(){
+	this.version = 0.4;
+}
+
+
+feedBoard.protoype = {
+
+	init: function(){
+
+	}
+
+}
+
+var fb = new feedBoard();
+
+
+
+onload = function(){
+
+    document.getElementById("contentbar").innerHTML = 'Importing opml data..';
+
+	loadOPMLlibrary(linklibrary);
+    displaySettings();
+    displayGroups();
+    displayBundle();
+
+}
+
+
+
+
+
+
 
 /********* Data ***********/
+
+
 function loadOPMLlibrary(lib){
     if(lib.length > 0 ){
-	
-      for (var i = 0; i < lib.length; i++) { 
+
+      for (var i = 0; i < lib.length; i++) {
         importOpmlChannel(lib[i]);
       }
-	  
+
     }else{
       document.getElementById("contentbar").innerHTML = 'No OPML libs (feedlists) available';
     }
 }
 
+
+
+
+
 function importOpmlChannel(url){
-  
+
     var valid = validateOpmlUrl(url);
     if(valid['chk'] == 1){
-		
-		
+
+
         var opml = valid['data'];
         var outlines = opml.getElementsByTagName("outline");
 
-        for (var i = 0; i < outlines.length; i++) { 
+        for (var i = 0; i < outlines.length; i++) {
             if(outlines[i].getAttribute('type') == 'category'){
                 // list sub outlines(links) to stack format (array ['groupname','urls'])
                 // list urls as new channels (without loading 'items')
                 var grp = outlines[i].getAttribute('title');
                 var lnks = outlines[i].getElementsByTagName("outline");
                 if(lnks.length > 0){
-                   
+
                    for (var l = 0; l < lnks.length; l++) {
                       if(lnks[l].getAttribute('xmlUrl') != ''){
                           var nwchannel = [];
@@ -78,11 +124,11 @@ function importOpmlChannel(url){
                           archive.push(nwchannel);
                           if(checkArr(groups,grp) == 0){
                               groups.push(grp);
-                          }	
+                          }
 
                       }
                    }
-                   
+
                 }
             }
         }
@@ -94,18 +140,25 @@ function importOpmlChannel(url){
 function importFeedChannel(url,group){
     if(typeof(group) === 'undefined' || typeof(group) === 'undefined') group = 'default';
             var valid = validateFeedUrl(url);
-            if(valid['chk'] == 1){  
-             
-               var feed = valid['data']; 
+            if(valid['chk'] == 1){
+
+               var feed = valid['data'];
                var newchannel = [];
                newchannel['title'] = feed.getElementsByTagName("title")[0].firstChild.nodeValue;
                newchannel['feedurl'] = url;
                newchannel['group'] = group;
                //newchannel['link'] = feed.getElementsByTagName("link")[0].firstChild.nodeValue;
-               
+
                newchannel['items'] = [];
-               var items = feed.getElementsByTagName("item");
-               for (var i = 0; i < 10; i++) {
+
+			   if( feed.getElementsByTagName("item") ){
+               	  var items = feed.getElementsByTagName("item");
+			   }else if( feed.getElementsByTagName("entry") ){
+				  var items = feed.getElementsByTagName("entry");
+			   }
+
+
+				for (var i = 0; i < 10; i++) {
                    var item = [];
                    item['title'] = items[i].getElementsByTagName("title")[0].firstChild.nodeValue;
                    item['description'] = items[i].getElementsByTagName("description")[0].firstChild.nodeValue;
@@ -114,7 +167,7 @@ function importFeedChannel(url,group){
                    item['channelgroup'] = group;
                    item['feedurl'] = url;
                    item['feedtitle'] = newchannel['title'];
-		   
+
                    newchannel['items'].push(item);
                }
                return newchannel;
@@ -149,11 +202,11 @@ function toggleChannel(opt){
 }
 
 function addUrlToBundle(url,group){ // add channel feed items to bundle
-    
-	var channel = getArchiveUrl(url,group); //getSubArr(archive,'feedurl',url); 
+
+	var channel = getArchiveUrl(url,group); //getSubArr(archive,'feedurl',url);
     var urlmax =  document.getElementById("feedmax").options[document.getElementById("feedmax").selectedIndex].text;
-    if(channel){ 
-        
+    if(channel){
+
 
         if(!channel['items']){
             var newchannel = importFeedChannel( url, group);
@@ -162,17 +215,17 @@ function addUrlToBundle(url,group){ // add channel feed items to bundle
                     newchannel['items'][c]['website'] = channel['website']; // add website url from opml list (not from rss)
                 }
                 for(var i = archive.length; i--;){
-	            if (archive[i]['feedurl'] === url && archive[i]['group'] === group){ 
+	            if (archive[i]['feedurl'] === url && archive[i]['group'] === group){
 		        archive[i]['items'] = newchannel['items']; // add loaded items to url archive
                         channel = archive[i];
 	            }
-	        }	
+	        }
             }else{
                 alert('Problemo! importing ' + url );
             }
         }
         if(channel['items'].length > 0){
-            channels.push(channel); // url to channels selection  
+            channels.push(channel); // url to channels selection
             for(i=0;i<urlmax;i++){
                 bundle.push(channel['items'][i]); // url items to bundle
             }
@@ -184,12 +237,12 @@ function addUrlToBundle(url,group){ // add channel feed items to bundle
 
 function removeUrlfromBundle(url,group){ // remove channel feed items from channels and bundle
         for(var i = channels.length; i--;){
-	    if (channels[i]['feedurl'] === url && channels[i]['group'] === group){ 
+	    if (channels[i]['feedurl'] === url && channels[i]['group'] === group){
 		channels.splice(i, 1);
 	    }
 	}
         for(var i = bundle.length; i--;){
-		if (bundle[i]['feedurl'] === url && bundle[i]['channelgroup'] === group){ 
+		if (bundle[i]['feedurl'] === url && bundle[i]['channelgroup'] === group){
 		    bundle.splice(i, 1);
 		}
 	}
@@ -223,9 +276,9 @@ function displayBundle(){
           var lnk = document.createElement('a');
           lnk.setAttribute('href',bundle[i]['link']);
           lnk.setAttribute('target', '_blank');
-          
+
           var bttl = document.createTextNode(bundle[i]['title']);
-          lnk.appendChild(bttl);  
+          lnk.appendChild(bttl);
           ttl.appendChild(lnk);
 
           var metabox = document.createElement('h4');
@@ -254,7 +307,7 @@ function displayBundle(){
               txt.setAttribute('class', 'itemtextbox');
               txt.innerHTML = cleanHtmlText(bundle[i]['description']);
               box.appendChild(txt);
-	  }	
+	  }
           holder.appendChild(box);
         }
 
@@ -267,7 +320,7 @@ function displayBundle(){
     document.getElementById("contentbar").appendChild(holder);
     displayChannels();
     setActiveOptions();
-	
+
         document.getElementById("loaderbox").className = 'hidden';
 
 }
@@ -293,8 +346,8 @@ function displayGroupChannels(obj){
     var options = groupmenu.getElementsByTagName('li');
     for(i=0;i<options.length;i++){
         options[i].removeAttribute('id');
-    }  
-    obj.setAttribute('id', 'currentgroup');  
+    }
+    obj.setAttribute('id', 'currentgroup');
     if(!document.getElementById("groupchannelbox")){
         var box = document.createElement('ul');
         box.setAttribute('id','groupchannelbox');
@@ -309,10 +362,10 @@ function displayGroupChannels(obj){
             opt.setAttribute('data-group',archive[i]['group']);
             opt.setAttribute('onclick','toggleChannel(this);');
             opt.innerHTML = archive[i]['title'];
-			
+
 			var del = document.createElement('span');
 			del.innerHTML = 'x';
-			
+
 			opt.appendChild(del);
             box.appendChild(opt);
         }
@@ -330,7 +383,7 @@ function displayChannels(){
         atl.innerHTML = 'Bundle';
         activebox.appendChild(atl);
         for(h=0;h<groups.length;h++){
-            if(checkSubArr(channels,'group',groups[h]) == 1){	
+            if(checkSubArr(channels,'group',groups[h]) == 1){
 		var box = document.createElement('div');
 		var ttl = document.createElement('h4');
 		ttl.innerHTML = groups[h];
@@ -342,14 +395,14 @@ function displayChannels(){
 						var del = document.createElement('span');
 						del.innerHTML = 'x';
                         del.setAttribute('onclick','toggleChannel(this.parentNode);');
-						
+
                         opt.setAttribute('data-feedurl',channels[i]['feedurl']);
                         opt.setAttribute('data-group',channels[i]['group']);
                         opt.innerHTML = channels[i]['title'];// + '<sup>x</sup>';
-						
-						
+
+
 						opt.appendChild(del);
-						
+
                         lst.appendChild(opt);
 		    }
                 }
@@ -368,16 +421,16 @@ function displaySettings(){
     var box = document.createElement('select');
     box.setAttribute('id', 'feedmax');
     box.setAttribute('onchange', 'reloadBundle();');
-    var opt1 = document.createElement('option'); 
+    var opt1 = document.createElement('option');
     opt1.innerHTML = '1';
-    var opt2 = document.createElement('option'); 
+    var opt2 = document.createElement('option');
     opt2.innerHTML = '3';
-    var opt3 = document.createElement('option'); 
+    var opt3 = document.createElement('option');
     opt3.setAttribute('selected','selected');
     opt3.innerHTML = '5';
-    var opt4 = document.createElement('option'); 
+    var opt4 = document.createElement('option');
     opt4.innerHTML = '7';
-    var opt5 = document.createElement('option'); 
+    var opt5 = document.createElement('option');
     opt5.innerHTML = '10';
     box.appendChild(opt1);
     box.appendChild(opt2);
@@ -386,7 +439,7 @@ function displaySettings(){
     box.appendChild(opt5);
     dsp.appendChild(box);
     dsp.appendChild(document.createTextNode(' items/channel'));
-    document.getElementById("optionbar").appendChild(dsp); 
+    document.getElementById("optionbar").appendChild(dsp);
 
     var dsp = document.createElement('label');
     dsp.setAttribute('id', 'selectboxminimize');
@@ -399,14 +452,14 @@ function displaySettings(){
 
     dsp.appendChild(box);
     dsp.appendChild(document.createTextNode(' minimize'));
-    document.getElementById("optionbar").appendChild(dsp); 
+    document.getElementById("optionbar").appendChild(dsp);
 }
 
 function setActiveOptions(){
     if(channels.length > 0){
         var groupmenu = document.getElementById("groupmenu");
         var options = groupmenu.getElementsByTagName('li');
-        if(options.length > 0){ 
+        if(options.length > 0){
             for(i=0;i<options.length;i++){
                 var grpnm = options[i].getAttribute('data-name');
                 if(checkSubArr(channels,'group',grpnm) == 1){
@@ -418,7 +471,7 @@ function setActiveOptions(){
         }
         var channelmenu = document.getElementById("groupchannelbox");
         var feedoptions = channelmenu.getElementsByTagName('li');
-        if(feedoptions.length > 0){ 
+        if(feedoptions.length > 0){
             for(i=0;i<feedoptions.length;i++){
                 var fdurl = feedoptions[i].getAttribute('data-feedurl');
                 if(checkSubArr(channels,'feedurl',fdurl) == 1){
@@ -431,13 +484,10 @@ function setActiveOptions(){
     }
 }
 
-onload = function(){
-    document.getElementById("contentbar").innerHTML = 'Importing opml data..';
-    loadOPMLlibrary(linklibrary); 		   	
-    displaySettings();
-    displayGroups();
-    displayBundle();
-}
+
+
+
+
 
 
 /********* Library ***********/
@@ -447,7 +497,7 @@ return regexp.test(s);
 }
 
 function validateOpmlUrl(url){
-  if(isUrl(url)){ 
+  if(isUrl(url)){
     var doc = loadXMLHTTP(url);
     var valid = [];
     if(doc.getElementsByTagName("opml") && doc.getElementsByTagName("title")[0].firstChild.nodeValue && doc.getElementsByTagName("outline")){
@@ -463,7 +513,7 @@ function validateOpmlUrl(url){
 }
 
 function validateFeedUrl(url){
-  if(isUrl(url)){ 
+  if(isUrl(url)){
     var doc = loadXMLHTTP(url);
     var valid = [];
     if(doc.getElementsByTagName("channel") && doc.getElementsByTagName("title")[0].firstChild.nodeValue && doc.getElementsByTagName("item")){
@@ -478,21 +528,24 @@ function validateFeedUrl(url){
   return valid;
 }
 
-function loadXMLHTTP(url) { // get feed xml with worker.php 
+function loadXMLHTTP(url) { // get feed xml with worker.php
+
 	xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET", 'assets/xmlparser.php?url=' + escape(url), false);
 	xmlhttp.send(null);
 	return xmlhttp.responseXML;
+
 }
+
 
 function cleanHtmlText(trunc){
   var textlength = 760;
 
   //trunc = trunc.replace(/<img[^>]*>/g,"");
   //trunc = trunc.replace(/<a\b[^>]*>(.*?)<\/a>/i,"");
-  
+
   	var m,
-    urls = [], 
+    urls = [],
     str = trunc,
     rex = /<img.*?src="([^">]*\/([^">]*?))".*?>/g;
 
@@ -500,17 +553,17 @@ function cleanHtmlText(trunc){
     	urls.push( m[1] );
 	}
 
-	//console.log( urls ); 
-	
+	//console.log( urls );
+
   trunc = strip_html_tags(trunc); // cleanup html tags
-  
+
   if(urls.length > 0){
-	
+
   	trunc = '<img src="' + urls[0] + '" width="20%" height="auto" onerror="javascript:this.src=\'https://avatars3.githubusercontent.com/u/20241931?v=3&s=460\'" />' + trunc;
 
 	/*  */
   }
-  
+
   if (trunc.length > textlength) {
     trunc = trunc.substring(0, textlength);
     trunc = trunc.replace(/\w+$/, '');
@@ -519,21 +572,21 @@ function cleanHtmlText(trunc){
   return (trunc + '..<div class="clr"></div>');
 }
 
-function strip_html_tags(str)  
-{  
-   if ((str===null) || (str===''))  
-       return false;  
-  else  
-   str = str.toString();  
-  return str.replace(/<[^>]*>/g, '');  
-}  
+function strip_html_tags(str)
+{
+   if ((str===null) || (str===''))
+       return false;
+  else
+   str = str.toString();
+  return str.replace(/<[^>]*>/g, '');
+}
 //See more at: http://www.w3resource.com/javascript-exercises/javascript-string-exercise-35.php#sthash.lbXbpewT.dpuf
 
 
 
 
 function checkSubArr(arr,subkey,val){ // check if a value exists in a sub array
-    var chk = 0;	
+    var chk = 0;
            if(arr.length > 0){
 	       for(var c=0; c<arr.length; c++){ if(arr[c][subkey] === val){ chk = 1; }}
            }
@@ -549,9 +602,9 @@ function getSubArr(arr,subkey,val){ // check if a value exists in a sub array
 
 function getArchiveUrl(url,group){
      if(archive.length > 0){
-         for(var c=0; c<archive.length; c++){ 
-             if(archive[c]['feedurl'] === url && archive[c]['group'] === group ){ 
-                 return archive[c]; 
+         for(var c=0; c<archive.length; c++){
+             if(archive[c]['feedurl'] === url && archive[c]['group'] === group ){
+                 return archive[c];
              }
          }
      }
@@ -560,7 +613,7 @@ function getArchiveUrl(url,group){
 
 function checkArr(arr,val){
     var chk = 0;
-    for(var c=0; c<arr.length; c++){ if(arr[c] === val){ chk = 1; }}				
+    for(var c=0; c<arr.length; c++){ if(arr[c] === val){ chk = 1; }}
     return chk;
 }
 

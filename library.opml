@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<opml version="2.0">
+	<head>
+		<title>Links voor Webdesign Den Haag Lab</title>
+		<dateCreated>Wed, 11 Oct 2017 14:52:53 GMT</dateCreated>
+		<!-- generator="WordPress/4.8.2" -->
+	</head>
+	<body> 
+ 
+<outline type="category" title="Headlines">
+	  <outline text="BBC News | News Front Page | World Edition"
+                title="BBC News | News Front Page | World Edition"
+                type="rss"
+                xmlUrl="http://newsrss.bbc.co.uk/rss/newsonline_world_edition/front_page/rss.xml" htmlUrl="http://news.bbc.co.uk/go/rss/-/2/hi/default.stm"/>
+    <outline text="Google News" title="Google News" type="rss"
+                xmlUrl="http://news.google.com/?output=rss" htmlUrl="http://news.google.com/"/>
+            
+            <outline text="MarketWatch.com - Top Stories"
+                title="MarketWatch.com - Top Stories" type="rss"
+                xmlUrl="http://www.marketwatch.com/rss/topstories" htmlUrl="http://www.marketwatch.com/news/default.asp?siteid=rss"/>
+            
+        </outline>
+
+<outline type="category" title="Popular">
+	<outline text="Boingboing" type="link" xmlUrl="http://feeds.feedburner.com/boingboing/ibag" htmlUrl="http://www.boingboing.com" updated="" />
+	<outline text="Mashable" type="link" xmlUrl="http://feeds.feedburner.com/Mashable" htmlUrl="http://www.mashable.com" updated="" />
+	<outline text="Wired Top Stories" title="Wired Top Stories" type="link" xmlUrl="http://www.wired.com/news/feeds/rss2/0,2610,,00.xml" htmlUrl="http://www.wired.com/rss/index.xml"/>
+</outline>
+
+<outline type="category" title="Art">
+	<outline text="Hifructose" type="link" xmlUrl="http://hifructose.com/feed/" htmlUrl="http://hifructose.com" updated="" />
+</outline>
+
+<outline type="category" title="Technology" text="Technology">
+
+<outline text="Tweakers.net" type="link" xmlUrl="http://feeds.feedburner.com/tweakers/mixed" htmlUrl="https://tweakers.net/nieuws/" updated="" />
+  
+            <outline text="Digg" title="Digg" type="rss"
+                xmlUrl="http://digg.com/rss/index.xml" htmlUrl="http://digg.com/"/>
+            <outline text="Engadget" title="Engadget" type="rss"
+                xmlUrl="http://www.engadget.com/rss.xml" htmlUrl="http://www.engadget.com"/>
+            <outline text="Gizmodo" title="Gizmodo" type="rss"
+                xmlUrl="http://feeds.gawker.com/gizmodo/full" htmlUrl="http://gizmodo.com"/>
+            <outline text="Slashdot" title="Slashdot" type="rss"
+                xmlUrl="http://slashdot.org/index.rss" htmlUrl="http://slashdot.org/"/>
+            <outline text="TechCrunch" title="TechCrunch" type="rss"
+                xmlUrl="http://feeds.feedburner.com/Techcrunch" htmlUrl="http://www.techcrunch.com"/>
+            <outline text="Wired Top Stories" title="Wired Top Stories"
+                type="rss"
+                xmlUrl="http://www.wired.com/news/feeds/rss2/0,2610,,00.xml" htmlUrl="http://www.wired.com/rss/index.xml"/>
+	    </outline>
+        
+       <outline type="category" title="Finance" text="Finance">
+			<outline text="AEX koersen"
+                title="AEX koersen - beleggen.nl"
+                type="rss"
+                xmlUrl="https://www.beleggen.nl/rss_aex" htmlUrl="http://beleggen.nl"/>
+            <outline text="Business and financial news - CNNMoney.com"
+                title="Business and financial news - CNNMoney.com"
+                type="rss"
+                xmlUrl="http://rss.cnn.com/rss/money_topstories.rss" htmlUrl="http://money.cnn.com/rssclick/?section=money_topstories"/>
+            <outline text="Fool.com: The Motley Fool"
+                title="Fool.com: The Motley Fool" type="rss"
+                xmlUrl="http://www.fool.com/About/headlines/rss_headlines.asp" htmlUrl="http://www.fool.com/"/>
+            <outline text="I Will Teach You To Be Rich"
+                title="I Will Teach You To Be Rich" type="rss"
+                xmlUrl="http://www.iwillteachyoutoberich.com/atom.xml" htmlUrl="http://www.iwillteachyoutoberich.com/blog"/>
+            <outline text="MarketWatch.com - Top Stories"
+                title="MarketWatch.com - Top Stories" type="rss"
+                xmlUrl="http://www.marketwatch.com/rss/topstories" htmlUrl="http://www.marketwatch.com/news/default.asp?siteid=rss"/>
+            <outline
+                text="PFBlog.com: The Unique Personal Finance Blog Since 2003"
+                title="PFBlog.com: The Unique Personal Finance Blog Since 2003"
+                type="rss" xmlUrl="http://www.pfblog.com/index.xml" htmlUrl="http://www.pfblog.com/"/>
+            <outline text="TheStreet.com" title="TheStreet.com"
+                type="rss"
+                xmlUrl="http://www.thestreet.com/feeds/rss/index.xml" htmlUrl="http://www.thestreet.com/"/>
+        </outline>
+	
+	
+
+</body>
+</opml>

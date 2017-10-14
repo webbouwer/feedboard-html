@@ -1,9 +1,9 @@
-<?php 
+<?php
 /**
  * Parse document in correct content type
- * returns js, xml or json 
+ * returns js, xml or json
  */
- 
+
 if($_GET['url']){
 
 // get extension by checking last 4 characters (enough for an extension)
@@ -13,26 +13,25 @@ $characters = 4;
 $start = $length - $characters;
 $url = substr($time , $start ,$characters);
 $ext = explode(".", $url); // drop the dot
-$type = $ext[1]; 
+$type = $ext[1];
 
 
 if($type == 'js'){
 // set javascript headers
 header("Content-Type: application/javascript");
-}
-
-
+}else
 if($type == 'xml'){
 // set xml headers
 header('Content-type: text/xml; charset=utf-8');
-}
-
-
+}else
 if($type == 'json'){
-// set json (default)
+// set json
 header('Content-type: text/json; charset=utf-8');
+}else
+{
+// set xml (default)
+header('Content-type: text/plain; charset=utf-8');
 }
-
 echo file_get_contents($_GET['url']);
 
 }else{
