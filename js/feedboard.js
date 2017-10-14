@@ -94,30 +94,6 @@ onload = function(){
 }
 
 
-/* still on main threat
-	onload = function(){
-
-		document.getElementById("contentbar").innerHTML = 'Importing opml data..';
-
-		FeedBoard.init();
-		//loadOPMLlibrary(linklibrary);
-	}
-	// Class
-	var FeedBoard = {
-
-    	version: 0.5,
-
-		init: function () {
-
-			loadOPMLlibrary(linklibrary);
-    		displaySettings();
-    		displayGroups();
-    		displayBundle();
-
-		}
-
-	}
-*/
 
 
 /********* Data ***********/
