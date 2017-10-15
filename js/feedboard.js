@@ -7,12 +7,6 @@ Wishlist
 - !? filter image from description
 
 
-Todo Version 0.2
-- check xml parser
-- extend cleanHtmlText (image display)
-- loading message
-- bundle: category/channel 1.filter 2.remove
-
 Changelog
 
 Version 0.2
@@ -54,10 +48,9 @@ alert(apple.getInfo());
 
 
 
-
 // opml file with links
 var linklibrary = ['http://webdesigndenhaag.net/project/feedboard/library.opml',
-				   //'https://raw.githubusercontent.com/marklogic-community/feed/master/test-scripts/data/opml_google-reader.opml',
+				   'https://raw.githubusercontent.com/marklogic-community/feed/master/test-scripts/data/opml_google-reader.opml',
 				   //'http://webdesigndenhaag.net/project/feedboard/construct.opml',
 				   //http://webdesigndenhaag.net/lab/wp-links-opml.php'
 				  ];
@@ -68,97 +61,180 @@ var channels = []; // array of urls selected for display
 var bundle = []; // array of items from selected urls
 var maxf = 3; // default amount of feeditems each url
 
+var promises = 0;
+/*
+var feedBoard = function(){
 
-function myFeedBoard() {
-
-  	this.version = 0.4;
+	this.version = 0.4;
 
 	this.init = function(){
 
-			loadOPMLlibrary(linklibrary);
-    		displaySettings();
-    		displayGroups();
-    		displayBundle();
+		this.loadOPMLlibrary(linklibrary);
+
+    	displaySettings();
+    	displayGroups();
+    	displayBundle();
+
+	}
+
+
+
+	this.loadOPMLlibrary = function(lib){
+
+		if(lib.length > 0 ){
+
+		  for (var i = 0; i < lib.length; i++) {
+
+			console.log('loading '+lib[i]);
+			importOpmlChannel(lib[i]);
+
+		  }
+
+		}else{
+		  document.getElementById("contentbar").innerHTML = 'No OPML libs (feedlists) available';
+		}
 	}
 
 	this.init();
-
 }
+
+
 
 
 onload = function(){
 
-	document.getElementById("contentbar").innerHTML = 'Importing opml data..';
+    document.getElementById("contentbar").innerHTML = 'Importing opml data..';
 
-	var FeedBoard = new myFeedBoard();
+	var fb = new feedBoard();
+
 }
 
+*/
 
 
+onload = function(){
 
-/********* Data ***********/
+    document.getElementById("contentbar").innerHTML = 'Importing opml data..';
+
+	loadOPMLlibrary(linklibrary);
+
+
+}
+
+function loadDisplay(){
+
+	displaySettings();
+    displayGroups();
+    displayBundle();
+
+}
 
 
 function loadOPMLlibrary(lib){
-    if(lib.length > 0 ){
 
-      for (var i = 0; i < lib.length; i++) {
-        importOpmlChannel(lib[i]);
-      }
+		if(lib.length > 0 ){
 
-    }else{
-      document.getElementById("contentbar").innerHTML = 'No OPML libs (feedlists) available';
-    }
+		  for (var i = 0; i < lib.length; i++) {
+
+			importOpmlChannel(lib[i], function(){
+				promises--;
+				if(promises == 0){
+
+					loadDisplay();
+
+				}
+			});
+
+		  }
+
+		}else{
+		  document.getElementById("contentbar").innerHTML = 'No OPML libs (feedlists) available';
+		}
+	}
+
+/********* Data ***********/
+
+function importOpmlChannel(url, callback){
+
+    var validation = validateOpmlUrl(url, function(valid){
+
+
+		if(valid['chk'] == 1){
+
+			var opml = valid['data'];
+			var outlines = opml.getElementsByTagName("outline");
+
+			for (var i = 0; i < outlines.length; i++) {
+
+				if(outlines[i].getAttribute('type') == 'category'){
+					// list sub outlines(links) to stack format (array ['groupname','urls'])
+					// list urls as new channels (without loading 'items')
+
+					var grp = outlines[i].getAttribute('title');
+					var lnks = outlines[i].getElementsByTagName("outline");
+					if(lnks.length > 0){
+
+					   for (var l = 0; l < lnks.length; l++) {
+						  if(lnks[l].getAttribute('xmlUrl') != ''){
+							  var nwchannel = [];
+							  nwchannel['title'] = lnks[l].getAttribute('text');
+							  nwchannel['feedurl'] = lnks[l].getAttribute('xmlUrl');
+							  nwchannel['website'] = lnks[l].getAttribute('htmlUrl');
+							  nwchannel['group'] = grp;
+							  archive.push(nwchannel);
+							  if(checkArr(groups,grp) == 0){
+								  groups.push(grp);
+							  }
+
+						  }
+					   }
+
+					}
+				}else
+				if( ( outlines[i].getAttribute('type') == 'link' || outlines[i].getAttribute('type') == 'rss') &&
+				   outlines[i].parentElement.getAttribute('type') != 'category' ){
+					// uncategorized
+					var grp = 'uncategorized';
+					var lnks = outlines[i];
+
+						  if(lnks.getAttribute('xmlUrl') != ''){
+							  var nwchannel = [];
+							  nwchannel['title'] = lnks.getAttribute('text');
+							  nwchannel['feedurl'] = lnks.getAttribute('xmlUrl');
+							  nwchannel['website'] = lnks.getAttribute('htmlUrl');
+							  nwchannel['group'] = grp;
+
+							  	if( !getSubArr(archive, 'feedurl', lnks.getAttribute('xmlUrl') ) ){
+							  		archive.push(nwchannel); // only archive new urls
+						  		}
+
+							  if(checkArr(groups,grp) == 0){
+								  groups.push(grp);
+							  }
+
+						  }
+
+
+				}
+			}
+		}else{
+			document.getElementById("contentbar").innerHTML = 'No feeds available';
+		}
+
+		callback();
+
+	});
 }
 
+function importFeedChannel(url,group, callback){
 
-
-
-
-function importOpmlChannel(url){
-
-    var valid = validateOpmlUrl(url);
-    if(valid['chk'] == 1){
-
-
-        var opml = valid['data'];
-        var outlines = opml.getElementsByTagName("outline");
-
-        for (var i = 0; i < outlines.length; i++) {
-            if(outlines[i].getAttribute('type') == 'category'){
-                // list sub outlines(links) to stack format (array ['groupname','urls'])
-                // list urls as new channels (without loading 'items')
-                var grp = outlines[i].getAttribute('title');
-                var lnks = outlines[i].getElementsByTagName("outline");
-                if(lnks.length > 0){
-
-                   for (var l = 0; l < lnks.length; l++) {
-                      if(lnks[l].getAttribute('xmlUrl') != ''){
-                          var nwchannel = [];
-                          nwchannel['title'] = lnks[l].getAttribute('text');
-                          nwchannel['feedurl'] = lnks[l].getAttribute('xmlUrl');
-                          nwchannel['website'] = lnks[l].getAttribute('htmlUrl');
-                          nwchannel['group'] = grp;
-                          archive.push(nwchannel);
-                          if(checkArr(groups,grp) == 0){
-                              groups.push(grp);
-                          }
-
-                      }
-                   }
-
-                }
-            }
-        }
-    }else{
-        document.getElementById("contentbar").innerHTML = 'No feeds available';
-    }
-}
-
-function importFeedChannel(url,group){
     if(typeof(group) === 'undefined' || typeof(group) === 'undefined') group = 'default';
-            var valid = validateFeedUrl(url);
-            if(valid['chk'] == 1){
+
+    	var validate = validateFeedUrl(url, function(valid){
+
+			promises--;
+
+			if(valid['chk'] == 1){
 
                var feed = valid['data'];
                var newchannel = [];
@@ -176,22 +252,32 @@ function importFeedChannel(url,group){
 			   }
 
 
-				for (var i = 0; i < 10; i++) {
+			   for (var i = 0; i < 10; i++) {
                    var item = [];
                    item['title'] = items[i].getElementsByTagName("title")[0].firstChild.nodeValue;
                    item['description'] = items[i].getElementsByTagName("description")[0].firstChild.nodeValue;
-                   item['pubDate'] = items[i].getElementsByTagName("pubDate")[0].firstChild.nodeValue;
-                   item['link'] = items[i].getElementsByTagName("link")[0].firstChild.nodeValue;
+
+				   if( item['pubDate'] = items[i].getElementsByTagName("pubDate")[0] )
+				   item['pubDate'] = items[i].getElementsByTagName("pubDate")[0].firstChild.nodeValue;
+
+
+				   item['link'] = items[i].getElementsByTagName("link")[0].firstChild.nodeValue;
                    item['channelgroup'] = group;
                    item['feedurl'] = url;
                    item['feedtitle'] = newchannel['title'];
 
                    newchannel['items'].push(item);
                }
-               return newchannel;
+
+               callback(newchannel); //return newchannel;
+
             }else{
-               return false;
+
+               callback(false); //return false;
+
             }
+
+	});
 }
 
 /********* Events ***********/
@@ -216,7 +302,6 @@ function toggleChannel(opt){
             }
         }
     }
-    displayBundle();
 }
 
 function addUrlToBundle(url,group){ // add channel feed items to bundle
@@ -227,28 +312,51 @@ function addUrlToBundle(url,group){ // add channel feed items to bundle
 
 
         if(!channel['items']){
-            var newchannel = importFeedChannel( url, group);
-            if(newchannel['items']){
-                for(var c = newchannel['items'].length; c--;){
-                    newchannel['items'][c]['website'] = channel['website']; // add website url from opml list (not from rss)
-                }
-                for(var i = archive.length; i--;){
-	            if (archive[i]['feedurl'] === url && archive[i]['group'] === group){
-		        archive[i]['items'] = newchannel['items']; // add loaded items to url archive
-                        channel = archive[i];
-	            }
-	        }
-            }else{
-                alert('Problemo! importing ' + url );
-            }
-        }
-        if(channel['items'].length > 0){
-            channels.push(channel); // url to channels selection
-            for(i=0;i<urlmax;i++){
-                bundle.push(channel['items'][i]); // url items to bundle
-            }
-            sortBundle();
-        }
+
+            var importing = importFeedChannel( url, group, function(newchannel){
+
+				if(newchannel['items']){
+
+					for(var c = newchannel['items'].length; c--;){
+						newchannel['items'][c]['website'] = channel['website']; // add website url from opml list (not from rss)
+					}
+					for(var i = archive.length; i--;){
+						if (archive[i]['feedurl'] === url && archive[i]['group'] === group){
+							archive[i]['items'] = newchannel['items']; // add loaded items to url archive
+							channel = archive[i];
+						}
+					}
+
+					if(newchannel['items'].length > 0){
+						channels.push(newchannel); // url to channels selection
+						for(i=0;i<urlmax;i++){
+							bundle.push(channel['items'][i]); // url items to bundle
+						}
+						sortBundle();
+					}
+
+				}else{
+
+					alert('Problemo! importing ' + url );
+
+				}
+
+    			displayBundle();
+
+			});
+
+        }else{
+
+			if(channel['items'].length > 0){
+				channels.push(channel); // url to channels selection
+				for(i=0;i<urlmax;i++){
+					bundle.push(channel['items'][i]); // url items to bundle
+				}
+				sortBundle();
+
+    			displayBundle();
+			}
+		}
 
     }
 }
@@ -264,6 +372,8 @@ function removeUrlfromBundle(url,group){ // remove channel feed items from chann
 		    bundle.splice(i, 1);
 		}
 	}
+
+    displayBundle();
 }
 
 function reloadBundle(){
@@ -313,11 +423,11 @@ function displayBundle(){
           //var tm = calculateSince(ts);
           var dtxt = document.createTextNode( ts );
           dtt.appendChild(dtxt);
-	  metabox.appendChild(dtt); // pubdate
+	  	  metabox.appendChild(dtt); // pubdate
 
 
 
-	  box.appendChild(metabox); // time and url
+	      box.appendChild(metabox); // time and url
           box.appendChild(ttl); // item title
 
           if(document.getElementById("setminimize").checked != true){
@@ -325,7 +435,7 @@ function displayBundle(){
               txt.setAttribute('class', 'itemtextbox');
               txt.innerHTML = cleanHtmlText(bundle[i]['description']);
               box.appendChild(txt);
-	  }
+	  	  }
           holder.appendChild(box);
         }
 
@@ -335,11 +445,18 @@ function displayBundle(){
           box.innerHTML = 'Select a channel for display';
           holder.appendChild(box);
     }
+
     document.getElementById("contentbar").appendChild(holder);
+
+	document.getElementById("contentbar").classList.remove('fullview');
+	if(document.getElementById("setminimize").checked != true){
+		document.getElementById("contentbar").classList.add('fullview');
+	}
+
     displayChannels();
     setActiveOptions();
 
-        document.getElementById("loaderbox").className = 'hidden';
+    document.getElementById("loaderbox").className = 'hidden';
 
 }
 
@@ -514,46 +631,77 @@ var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.
 return regexp.test(s);
 }
 
-function validateOpmlUrl(url){
-  if(isUrl(url)){
-    var doc = loadXMLHTTP(url);
-    var valid = [];
-    if(doc.getElementsByTagName("opml") && doc.getElementsByTagName("title")[0].firstChild.nodeValue && doc.getElementsByTagName("outline")){
-      valid['chk'] = 1;
-      valid['data'] = doc;
-    }else{ // no channel title
-      valid['chk'] = 'This url might not be a valid OPML url';
-    }
-  }else{
-    valid['chk'] = 'Should be a valid OPML url';
-  }
-  return valid;
+function validateOpmlUrl(url,callback){
+
+	var valid = [];
+
+  	if(isUrl(url)){
+    	var getdoc = loadXMLHTTP(url,function(doc){
+			if(doc.getElementsByTagName("opml") && doc.getElementsByTagName("title")[0].firstChild.nodeValue && doc.getElementsByTagName("outline")){
+				valid['chk'] = 1;
+				valid['data'] = doc;
+			}else{ // no channel title
+				valid['chk'] = 'This url might not be a valid OPML url';
+			}
+
+			callback( valid );
+		});
+
+
+  	}else{
+  		valid['chk'] = 'Should be a valid OPML url';
+
+    	callback( valid );
+  	}
 }
 
-function validateFeedUrl(url){
-  if(isUrl(url)){
-    var doc = loadXMLHTTP(url);
-    var valid = [];
-    if(doc.getElementsByTagName("channel") && doc.getElementsByTagName("title")[0].firstChild.nodeValue && doc.getElementsByTagName("item")){
-      valid['chk'] = 1;
-      valid['data'] = doc;
-    }else{ // no channel title
-      valid['chk'] = 'This url might not be a valid feed channel url';
-    }
-  }else{
-    valid['chk'] = 'Should be a valid url';
-  }
-  return valid;
+function validateFeedUrl(url,callback){
+
+	var valid = [];
+
+
+	if(isUrl(url)){
+    	var getdoc = loadXMLHTTP(url, function(doc){
+
+    	if(doc.getElementsByTagName("channel") && doc.getElementsByTagName("title")[0].firstChild.nodeValue && doc.getElementsByTagName("item")){
+      		valid['chk'] = 1;
+      		valid['data'] = doc;
+    	}else{ // no channel title
+				valid['chk'] = 'This url might not be a valid feed url';
+			}
+
+			callback( valid );
+		});
+
+
+  	}else{
+  		valid['chk'] = 'Should be a valid OPML url';
+
+    	callback( valid );
+  	}
+
 }
 
-function loadXMLHTTP(url) { // get feed xml with worker.php
 
-	xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET", 'assets/xmlparser.php?url=' + escape(url), false);
-	xmlhttp.send(null);
-	return xmlhttp.responseXML;
+function loadXMLHTTP(url,callback){
 
+	promises++;
+
+	var newRequest = new XMLHttpRequest();
+	//newRequest.addEventListener("load", reqListener);
+	newRequest.addEventListener("load", function(){
+
+		callback( this.responseXML);
+
+	});
+
+	newRequest.open('GET', 'assets/xmlparser.php?url=' + escape(url));
+	newRequest.send();
+
+	console.log(promises);
 }
+
+
 
 
 function cleanHtmlText(trunc){
