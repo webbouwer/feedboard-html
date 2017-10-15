@@ -7,25 +7,40 @@
 	</head>
 	<body> 
  
-<outline type="category" title="Headlines">
-	  <outline text="BBC News | News Front Page | World Edition"
+ 	<outline type="category" title="Headlines">
+		<outline text="BBC News | News Front Page | World Edition"
                 title="BBC News | News Front Page | World Edition"
                 type="rss"
                 xmlUrl="http://newsrss.bbc.co.uk/rss/newsonline_world_edition/front_page/rss.xml" htmlUrl="http://news.bbc.co.uk/go/rss/-/2/hi/default.stm"/>
-    <outline text="Google News" title="Google News" type="rss"
+    	<outline text="Google News" title="Google News" type="rss"
                 xmlUrl="http://news.google.com/?output=rss" htmlUrl="http://news.google.com/"/>
             
             <outline text="MarketWatch.com - Top Stories"
                 title="MarketWatch.com - Top Stories" type="rss"
                 xmlUrl="http://www.marketwatch.com/rss/topstories" htmlUrl="http://www.marketwatch.com/news/default.asp?siteid=rss"/>
             
-        </outline>
-
-<outline type="category" title="Popular">
-	<outline text="Boingboing" type="link" xmlUrl="http://feeds.feedburner.com/boingboing/ibag" htmlUrl="http://www.boingboing.com" updated="" />
-	<outline text="Mashable" type="link" xmlUrl="http://feeds.feedburner.com/Mashable" htmlUrl="http://www.mashable.com" updated="" />
-	<outline text="Wired Top Stories" title="Wired Top Stories" type="link" xmlUrl="http://www.wired.com/news/feeds/rss2/0,2610,,00.xml" htmlUrl="http://www.wired.com/rss/index.xml"/>
-</outline>
+    </outline>
+	
+	
+	<outline type="category" title="Dutch News">
+			<outline text="Nu.nl" title="Nu.nl" type="rss"
+						xmlUrl="https://www.nu.nl/rss" htmlUrl="https://www.nu.nl"/>
+			<outline text="NOS Journaal" title="NOS Journaal" type="rss"
+						xmlUrl="http://feeds.nos.nl/nosjournaal" htmlUrl="https://www.nos.nl/nosjournaal"/>
+			<outline text="Trouw dagblad" title="Trouw dagblad" type="rss"
+						xmlUrl="https://www.trouw.nl/home/rss.xml" htmlUrl="https://www.trouw.nl"/>
+			<outline text="Volkskrant dagblad" title="Volkskrant dagblad" type="rss"
+						xmlUrl="https://www.volkskrant.nl/nieuws/rss.xml" htmlUrl="https://www.volkskrant.nl/nieuws"/>
+			<outline text="NRC dagblad" title="NRC dagblad" type="rss"
+						xmlUrl="https://www.nrc.nl/rss/" htmlUrl="https://www.nrc.nl"/>
+    </outline>
+	
+	
+	<outline type="category" title="Popular">
+		<outline text="Boingboing" type="link" xmlUrl="http://feeds.feedburner.com/boingboing/ibag" htmlUrl="http://www.boingboing.com" updated="" />
+		<outline text="Mashable" type="link" xmlUrl="http://feeds.feedburner.com/Mashable" htmlUrl="http://www.mashable.com" updated="" />
+		<outline text="Wired Top Stories" title="Wired Top Stories" type="link" xmlUrl="http://www.wired.com/news/feeds/rss2/0,2610,,00.xml" htmlUrl="http://www.wired.com/rss/index.xml"/>
+		</outline>
 
 <outline type="category" title="Art">
 	<outline text="Hifructose" type="link" xmlUrl="http://hifructose.com/feed/" htmlUrl="http://hifructose.com" updated="" />

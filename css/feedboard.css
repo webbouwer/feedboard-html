@@ -8,7 +8,7 @@ html
 {
 width:100%;
 height:100%;
-font-size:80%;
+font-size:1em;
 font-family:"arial", verdana, geneva;
 }
 
@@ -51,7 +51,7 @@ clear:both;
 /********************************************** GLOBAL ****************************************/
 div#maincontainer
 {
-width:98%;
+width:100%;
 margin:0px auto;
 }
 
@@ -82,6 +82,13 @@ display:none;
 div#loaderbox.active {
 display:block;
 }
+
+
+
+ul#feedbundle li
+{
+clear:both;
+}
 ul#feedbundle li.bundle-item,
 ul#feedbundle li.no-display
 {
@@ -100,12 +107,16 @@ div#bottombar
 
 
 
-/********************************************** GROUP MENU ****************************************/
+/************************************** GROUP CHANNEL MENU ****************************************/
 
 
 ul#groupmenu li,
-ul#groupchannelbox li
+ul#groupchannelbox li,
+#activeselectbox ul li
 {
+display: inline-block;
+padding:2px 3px;
+margin:2px;
 }
 li#currentgroup
 {
@@ -123,6 +134,11 @@ color:#dddddd;
 padding:0px 2px;
 }
 
+
+ul#groupchannelbox li
+{
+}
+
 ul#groupchannelbox li span,
 ul#groupchannelbox li.nonactive span
 {
@@ -138,7 +154,13 @@ ul#groupchannelbox li.active:hover
 background-color: #CCCCCC;
 }
 
-/********************************************** ACTIVE MENU ****************************************/
+ul#groupchannelbox li.loading
+{
+background-image: repeating-linear-gradient(145deg, #454545, #454545 2px, #232323 2px, #232323 4px);
+}
+
+
+/************************************* ACTIVE MENU ****************************************/
 div#activeselectbox div ul li
 {
 background-color: #CCCCCC;
@@ -158,12 +180,7 @@ ul#feedbundle li.bundle-item
 display:block;
 width:100%;
 }
-ul#feedbundle li.bundle-item div.itemtextbox img
-{
-display:none;
-width:0;
-height:0;
-}
+ul#feedbundle li.bundle-item div.itemtextbox img,
 ul#feedbundle li.bundle-item div.itemtextbox img:nth-child(1)
 {
 display:block;
@@ -183,39 +200,19 @@ ul#feedbundle
 
 ul#feedbundle li.bundle-item
 {
-float:left;
-display:block;
-width:49%;
-margin-right:1%;
-vertical-align: text-top;
 }
 
 .fullview ul#feedbundle li.bundle-item
 {
-float:left;
-display:block;
-width:49%;
-margin-right:1%;
-overflow:hidden;
-vertical-align: text-top;
 }
 
 
 ul#feedbundle li.bundle-item div.itemtextbox img
 {
-display:none;
-max-width:29% !important;
-height:auto;
 }
 
 ul#feedbundle li.bundle-item div.itemtextbox img:nth-child(1)
 {
-display:block;
-max-width:29% !important;
-height:auto;
-float:left;
-margin-right:12px;
-vertical-align:text-top;
 }
 
 }

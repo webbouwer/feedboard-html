@@ -7,8 +7,7 @@
 <!-- viewport locked -->
 <meta name="viewport" content="user-scalable=no, width=device-width" />
 
-<link rel="stylesheet" type="text/css" href="css/feeds.css" />
-<link id="optionstylelink" rel="stylesheet" type="text/css" href="css/basic.css" />
+<link rel="stylesheet" type="text/css" href="css/feedboard.css" />
 
 <script src="js/detect.js" type="text/javascript" language="javascript"></script>
 <script src="js/feedboard.js" type="text/javascript" language="javascript"></script>

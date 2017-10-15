@@ -27,7 +27,10 @@ ul#groupchannelbox li
 background-color:#750000;
 color:#ffffff;
 }
-
+ul#groupchannelbox li.loading
+{
+background-image: repeating-linear-gradient(145deg, #454545, #454545 2px, #232323 2px, #232323 4px);
+}
 
 div#sidebar
 {

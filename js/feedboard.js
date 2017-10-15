@@ -208,14 +208,22 @@ function importFeedChannel(url,group, callback){
 
 			   for (var i = 0; i < 10; i++) {
                    var item = [];
+
+				   if(typeof items[i] != 'undefined'){
+
+				   if(items[i].getElementsByTagName("title")[0])
                    item['title'] = items[i].getElementsByTagName("title")[0].firstChild.nodeValue;
+
+				   if(items[i].getElementsByTagName("description")[0])
                    item['description'] = items[i].getElementsByTagName("description")[0].firstChild.nodeValue;
 
-				   if( item['pubDate'] = items[i].getElementsByTagName("pubDate")[0] )
+				   if( items[i].getElementsByTagName("pubDate")[0] )
 				   item['pubDate'] = items[i].getElementsByTagName("pubDate")[0].firstChild.nodeValue;
 
-
+				   if(items[i].getElementsByTagName("link")[0])
 				   item['link'] = items[i].getElementsByTagName("link")[0].firstChild.nodeValue;
+
+				   }
                    item['channelgroup'] = group;
                    item['feedurl'] = url;
                    item['feedtitle'] = newchannel['title'];
@@ -239,6 +247,8 @@ function toggleChannel(opt){
     var url = opt.getAttribute('data-feedurl');
     var group = opt.getAttribute('data-group');
     var elements = document.querySelectorAll('[data-feedurl]');
+
+
     if(checkSubArr(channels,'feedurl',url) == 1){
         removeUrlfromBundle(url,group);
         //opt.setAttribute('class','nonactive');
@@ -248,13 +258,15 @@ function toggleChannel(opt){
             }
         }
     }else{
-        addUrlToBundle(url,group);
         //opt.setAttribute('class','active');
         for ( var i = 0; i < elements.length; i++ ) {
             if(elements[i].getAttribute('data-feedurl') == url){
             elements[i].setAttribute('class','active');
+			elements[i].classList.add('loading');
             }
         }
+
+        addUrlToBundle(url,group);
     }
 }
 
@@ -272,7 +284,10 @@ function addUrlToBundle(url,group){ // add channel feed items to bundle
 				if(newchannel['items']){
 
 					for(var c = newchannel['items'].length; c--;){
-						newchannel['items'][c]['website'] = channel['website']; // add website url from opml list (not from rss)
+						// add channel info (website url from opml list, not from rss)
+						newchannel['items'][c]['website'] = channel['website'];
+						newchannel['items'][c]['group'] = group;
+						newchannel['items'][c]['feedtitle'] = channel['title'];
 					}
 					for(var i = archive.length; i--;){
 						if (archive[i]['feedurl'] === url && archive[i]['group'] === group){
@@ -295,6 +310,15 @@ function addUrlToBundle(url,group){ // add channel feed items to bundle
 
 				}
 
+				// remove loading class from button..
+				var loadingelements = document.querySelectorAll('[data-feedurl]');
+				for ( var i = 0; i < loadingelements.length; i++ ) {
+            		if(loadingelements[i].getAttribute('data-feedurl') == url){
+            			loadingelements[i].classList.remove('loading');
+            		}
+				}
+
+
     			displayBundle();
 
 			});
@@ -307,10 +331,12 @@ function addUrlToBundle(url,group){ // add channel feed items to bundle
 					bundle.push(channel['items'][i]); // url items to bundle
 				}
 				sortBundle();
-
     			displayBundle();
 			}
 		}
+
+
+
 
     }
 }
@@ -354,6 +380,8 @@ function displayBundle(){
         for(i=0;i<bundle.length;i++){
           var box = document.createElement('li');
           box.setAttribute('class','bundle-item');
+          box.setAttribute('data-group', bundle[i]['group'] );
+          box.setAttribute('data-feedurl', bundle[i]['link'] );
           var ttl = document.createElement('h3');
           var lnk = document.createElement('a');
           lnk.setAttribute('href',bundle[i]['link']);
@@ -383,13 +411,15 @@ function displayBundle(){
 
 	      box.appendChild(metabox); // time and url
           box.appendChild(ttl); // item title
-
+var l = 100;
           if(document.getElementById("setminimize").checked != true){
+			  l = 500;
+			  }
               var txt = document.createElement('div');
               txt.setAttribute('class', 'itemtextbox');
-              txt.innerHTML = cleanHtmlText(bundle[i]['description']);
+              txt.innerHTML = cleanHtmlText(bundle[i]['description'],l);
               box.appendChild(txt);
-	  	  }
+
           holder.appendChild(box);
         }
 
@@ -652,17 +682,18 @@ function loadXMLHTTP(url,callback){
 	newRequest.open('GET', 'assets/xmlparser.php?url=' + escape(url));
 	newRequest.send();
 
-	console.log(promises);
+	console.log('current: '+url);
 }
 
 
 
 
-function cleanHtmlText(trunc){
-  var textlength = 760;
+function cleanHtmlText(trunc,l){
 
-  //trunc = trunc.replace(/<img[^>]*>/g,"");
-  //trunc = trunc.replace(/<a\b[^>]*>(.*?)<\/a>/i,"");
+	var textlength = 140;
+	if(l) textlength = l;
+ 	//trunc = trunc.replace(/<img[^>]*>/g,"");
+  	//trunc = trunc.replace(/<a\b[^>]*>(.*?)<\/a>/i,"");
 
   	var m,
     urls = [],
@@ -673,7 +704,7 @@ function cleanHtmlText(trunc){
     	urls.push( m[1] );
 	}
 
-	//console.log( urls );
+	console.log( urls );
 
   trunc = strip_html_tags(trunc); // cleanup html tags
 
@@ -687,9 +718,10 @@ function cleanHtmlText(trunc){
   if (trunc.length > textlength) {
     trunc = trunc.substring(0, textlength);
     trunc = trunc.replace(/\w+$/, '');
+	trunc = trunc + '..<div class="clr"></div>'
   }
 
-  return (trunc + '..<div class="clr"></div>');
+  return (trunc);
 }
 
 function strip_html_tags(str)
