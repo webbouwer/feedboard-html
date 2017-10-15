@@ -11,15 +11,18 @@ Version 0.1
 - import opml file to archive and groups
 - build group navigation
 - import rss channel to archive
+
 Version 0.2
 - list channels and items in bundle
 - toggleChannel querySelectorAll data-feedurl
 - display and reload bundle
+
 Version 0.3
 - option: max feeds per channel (settings)
 - option: minimize (setting)
 Version 0.4
 - list active channels ordered in groups
+
 Version 0.5
 - fixed async xml request on main threat
 - adjusted display functions to async proces
