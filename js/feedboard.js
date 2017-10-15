@@ -1,51 +1,4 @@
 /* Feedboard 0.4 */
-/*
-Wishlist
-- date/time format (.. time ago) .. https://coderwall.com/p/uub3pw/javascript-timeago-func-e-g-8-hours-ago
-- desktop and mobile styling
-- display bundle by group (bundle)
-- !? filter image from description
-
-
-Changelog
-
-Version 0.2
-- toggleChannel querySelectorAll data-feedurl
-
-Version 0.1
-- import opml file to archive and groups
-- build group navigation
-- import rss channel to archive
-Version 0.2
-- list channels and items in bundle
-- display and reload bundle
-Version 0.3
-- option: max feeds per channel (settings)
-- option: minimize (setting)
-Version 0.4
-- list active channels ordered in groups
-Version 0.5
-.. inprogress: fix remove xml request from main threat
-
-*/
-
-
-/*
-
-
-var apple = {
-    type: "macintosh",
-    color: "red",
-    getInfo: function () {
-        return this.color + ' ' + this.type + ' apple';
-    }
-}
-apple.color = "reddish";
-alert(apple.getInfo());
-
-*/
-
-
 
 
 // opml file with links
@@ -62,6 +15,7 @@ var bundle = []; // array of items from selected urls
 var maxf = 3; // default amount of feeditems each url
 
 var promises = 0;
+
 /*
 var feedBoard = function(){
 
